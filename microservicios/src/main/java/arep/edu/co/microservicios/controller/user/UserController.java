@@ -1,29 +1,31 @@
 package arep.edu.co.microservicios.controller.user;
 
-import arep.edu.co.microservicios.service.user.UserService;
 import arep.edu.co.microservicios.model.User;
-import lombok.RequiredArgsConstructor;
+import arep.edu.co.microservicios.service.user.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 public class UserController {
-  private final UserService service;
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public UsuarioResponse create(@RequestBody CrearUsuarioRequest req) {
-    User u = service.create(req.username(), req.displayName());
-    return new UsuarioResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getCreatedAt());
-  }
+    private final UserService service;
 
-  @GetMapping("/{id}")
-  public UsuarioResponse get(@PathVariable UUID id) {
-    var u = service.get(id);
-    return new UsuarioResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getCreatedAt());
-  }
+    public UserController(UserService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsuarioResponse create(@Valid @RequestBody CrearUsuarioRequest req) {
+        User u = service.create(req.username(), req.email(), req.password());
+        return new UsuarioResponse(u.getId(), u.getUsername(), u.getEmail());
+    }
+
+    @GetMapping("/{id}")
+    public UsuarioResponse get(@PathVariable Long id) {
+        var u = service.get(id);
+        return new UsuarioResponse(u.getId(), u.getUsername(), u.getEmail());
+    }
 }

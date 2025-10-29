@@ -2,19 +2,27 @@ package arep.edu.co.microservicios.service.user;
 
 import arep.edu.co.microservicios.model.User;
 import arep.edu.co.microservicios.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
-@Service @RequiredArgsConstructor
+@Service
+@Transactional
 public class UserService {
-  private final UserRepository repo;
+    private final UserRepository users;
 
-  public User create(String username, String displayName) {
-    var u = User.builder().username(username).displayName(displayName).build();
-    return repo.save(u);
-  }
+    public UserService(UserRepository users) {
+        this.users = users;
+    }
 
-  public User get(UUID id) { return repo.findById(id).orElseThrow(); }
+    public User create(String username, String email, String password) {
+        var u = new User();
+        u.setUsername(username);
+        u.setEmail(email);
+        u.setPassword(password);
+        return users.save(u);
+    }
+
+    public User get(Long id) {
+        return users.findById(id).orElseThrow();
+    }
 }

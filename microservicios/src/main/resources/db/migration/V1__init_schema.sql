@@ -1,47 +1,19 @@
-DROP TABLE IF EXISTS posts CASCADE;
-DROP TABLE IF EXISTS streams CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-
-
-CREATE TABLE users (
+CREATE TABLE usuario (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(150) NOT NULL
 );
 
-
-CREATE TABLE streams (
+CREATE TABLE stream (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(100) NOT NULL
 );
 
-
-CREATE TABLE posts (
+CREATE TABLE post (
     id SERIAL PRIMARY KEY,
-    content VARCHAR(140) NOT NULL CHECK (char_length(content) <= 140),
+    content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_id INT NOT NULL,
-    stream_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (stream_id) REFERENCES streams (id) ON DELETE CASCADE
+    user_id INT REFERENCES usuario(id),
+    stream_id INT REFERENCES stream(id)
 );
-
-
-CREATE INDEX idx_posts_user ON posts(user_id);
-CREATE INDEX idx_posts_stream ON posts(stream_id);
-
-
-INSERT INTO streams (name, description)
-VALUES ('Global Stream', 'Stream global para todos los posts');
-
-
-INSERT INTO users (username, email, password)
-VALUES ('admin', 'admin@microtweet.local', 'admin123');
-
-
-INSERT INTO posts (content, user_id, stream_id)
-VALUES ('¡Bienvenido a Microtweet! ', 1, 1);

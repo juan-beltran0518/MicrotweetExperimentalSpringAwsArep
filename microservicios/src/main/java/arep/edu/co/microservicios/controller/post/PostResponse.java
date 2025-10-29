@@ -1,11 +1,11 @@
 package arep.edu.co.microservicios.controller.post;
 
-import java.util.UUID;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public record PostResponse(
-    UUID id,
-    UUID autorId,
-    String contenido,
-    Instant createdAt
+    Long id,
+    Long userId,
+    Long streamId,
+    String content,
+    LocalDateTime createdAt
 ) {}
