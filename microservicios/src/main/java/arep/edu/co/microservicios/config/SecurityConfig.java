@@ -13,8 +13,7 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable());
     http.authorizeHttpRequests(auth -> auth
         .requestMatchers("/actuator/health", "/api/stream", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-        .requestMatchers("/api/posts").authenticated()
-        .anyRequest().permitAll()
+        .requestMatchers("/api/posts").authenticated() 
     );
     http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();

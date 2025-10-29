@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository users;
 
-    public UserService(UserRepository users) {
-        this.users = users;
-    }
+    public UserService(UserRepository users) { this.users = users; }
 
     public User create(String username, String email, String password) {
         var u = new User();
@@ -22,7 +20,15 @@ public class UserService {
         return users.save(u);
     }
 
-    public User get(Long id) {
-        return users.findById(id).orElseThrow();
+    public User get(Long id) { return users.findById(id).orElseThrow(); }
+
+    public User getOrCreateByEmail(String email, String fallbackUsername) {
+        return users.findByEmail(email).orElseGet(() -> {
+            var u = new User();
+            u.setUsername(fallbackUsername != null ? fallbackUsername : email);
+            u.setEmail(email);
+            u.setPassword("{cognito}"); 
+            return users.save(u);
+        });
     }
 }
